@@ -8,6 +8,36 @@
 $tempDir = "C:\temp_installer"
 New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
 
+# Function to get the correct desktop path
+function Get-DesktopPath {
+    try {
+        # First try to get the desktop path using the Windows Shell
+        $shell = New-Object -ComObject Shell.Application
+        $folder = $shell.Namespace(0x0010)
+        $desktopPath = $folder.Self.Path
+    }
+    catch {
+        # Fallback methods if Shell method fails
+        try {
+            # Try getting from the registry
+            $desktopPath = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::Desktop)
+        }
+        catch {
+            # Final fallback - check both standard and OneDrive paths
+            $standardPath = "$env:USERPROFILE\Desktop"
+            $oneDrivePath = "$env:USERPROFILE\OneDrive\Desktop"
+            
+            if (Test-Path $oneDrivePath) {
+                $desktopPath = $oneDrivePath
+            }
+            else {
+                $desktopPath = $standardPath
+            }
+        }
+    }
+    return $desktopPath
+}
+
 # Function to check and install dependencies
 function Install-RequiredDependencies {
     Write-Host "`n=== Checking System Requirements ===" -ForegroundColor Cyan
@@ -293,10 +323,13 @@ If you encounter any issues, please check the following:
 - You have sufficient disk space
 "@
 
-    $report | Out-File "$env:USERPROFILE\Desktop\setup_report.txt"
+    # Save report using the new desktop path function
+    $desktopPath = Get-DesktopPath
+    $reportPath = Join-Path -Path $desktopPath -ChildPath "setup_report.txt"
+    $report | Out-File $reportPath -Force
 
     Write-Host "`nSetup completed successfully!" -ForegroundColor Green
-    Write-Host "A detailed report has been saved to your desktop." -ForegroundColor Yellow
+    Write-Host "A detailed report has been saved to: $reportPath" -ForegroundColor Yellow
     Write-Host "Please restart your computer to complete the installation." -ForegroundColor Yellow
 }
 catch {
