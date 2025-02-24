@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **AiDevKit.ps1** script is a PowerShell tool designed to automate the setup of an AI development environment on Windows. It simplifies the installation of essential tools, libraries, and dependencies required for AI and machine learning development. The script checks system requirements, installs necessary dependencies, and provides an interactive menu for selecting and installing components such as NVIDIA drivers, CUDA Toolkit, Miniconda, and other development tools. It is designed to be run as an administrator and generates a detailed setup report upon completion.
+The **AI Development Setup Kit** script is a PowerShell tool designed to automate the setup of an AI development environment on Windows. It simplifies the installation of essential tools, libraries, and dependencies required for AI and machine learning development. The script checks system requirements, installs necessary dependencies, and provides an interactive menu for selecting and installing components such as NVIDIA drivers, CUDA Toolkit, Miniconda, and other development tools. It is designed to be run as an administrator and generates a detailed setup report upon completion.
 
 ---
 
